@@ -5,7 +5,7 @@ app = Flask(__name__)
 import random
 
 # 配置数据库。这里以SQLite为例，你可以根据实际情况替换为MySQL或PostgreSQL的连接字符串
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123456@localhost/R-E-Ding'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123456@localhost/R-E-Dine'
 
 db = SQLAlchemy(app)
 
@@ -66,10 +66,13 @@ def login():
     password = data.get('password')
 
     # 在实际应用中，应该使用加密的密码
-    user = User.query.filter_by(name=username, password=password).first()
-
-    if user:
-        return jsonify({'role': user.role,'id': user.id}), 200
+    user_name = User.query.filter_by(name=username, password=password).first()
+    user_email = User.query.filter_by(email=username, password=password).first()
+    
+    if user_name:
+        return jsonify({'role': user_name.role,'id': user_name.id}), 200
+    elif user_email:
+        return jsonify({'role': user_email.role,'id': user_email.id}), 200
     else:
         return jsonify({'error': 'Invalid username or password'}), 401
 
