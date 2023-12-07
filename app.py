@@ -1,3 +1,7 @@
+#R-E-Dine Server Version 1.1a
+#Author: Yang Ying
+#License: GPLv3
+
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS  # 导入 CORS
@@ -292,6 +296,26 @@ def add_dish():
         'id': new_dish.id,
         'message': 'New dish added successfully'
     }), 201
+
+# 查询特定ID菜品信息
+@app.route('/dishes/<int:dish_id>', methods=['GET'])
+def get_dish_details(dish_id):
+    # 查询指定ID的菜品
+    dish = Dish.query.get(dish_id)
+    if not dish:
+        return jsonify({'error': 'Dish not found'}), 404
+
+    # 构建并返回菜品信息
+    dish_data = {
+        'id': dish.id,
+        'name': dish.name,
+        'description': dish.description,
+        'price': str(dish.price),
+        'image_url': dish.image_url,
+        'restaurant': dish.restaurant
+    }
+
+    return jsonify(dish_data), 200
 
 # 更新菜品信息
 @app.route('/dishes/<int:dish_id>', methods=['PUT'])
